@@ -16,7 +16,7 @@ def check_ssl_state(url):
         try:
             response = requests.head(url, verify=True)
             return 1
-        except requests.exceptions.SSLError:
+        except:
             return 0
     else:
         return -1
@@ -33,7 +33,7 @@ def check_domain_registration_length(url, days_threshold=365):
         else:
             return 1
     except whois.parser.PywhoisError:
-        return None
+        return 0
 
 # %%
 def check_favicon(url):
@@ -50,8 +50,8 @@ def check_favicon(url):
         else:
             return 1
 
-    except requests.exceptions.RequestException:
-        return False
+    except requests.exceptions.RequestException: #no favicon
+        return 0
 
 # %%
 def check_ports(url):
@@ -64,8 +64,8 @@ def check_ports(url):
         return 1 if open_ports_status and closed_ports_status else -1
 
     except socket.gaierror as e:
-        print(f"Error: {e}")
-        return -1
+        # print(f"Error: {e}")
+        return 0
 
 def is_port_open(hostname, port):
     try:
@@ -77,8 +77,8 @@ def is_port_open(hostname, port):
         return result == 0
 
     except socket.error as e:
-        print(f"Error: {e}")
-        return False
+        # print(f"Error: {e}")
+        return 0
 
 # %%
 def check_request_url(url):
@@ -110,7 +110,7 @@ def check_request_url(url):
         else:
             return -1
     except requests.exceptions.RequestException as e:
-        return -1
+        return 0
 
 # %%
 def check_url_of_anchor(url):
@@ -149,8 +149,8 @@ def check_url_of_anchor(url):
             return -1
 
     except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
-        return -1
+        # print(f"Error: {e}")
+        return 0
 
 # %%
 def check_links_in_tags(url):
@@ -159,7 +159,7 @@ def check_links_in_tags(url):
         response.raise_for_status()
         html_content = response.text
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
+        # print(f"Error fetching URL: {e}")
         return -1
 
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -187,8 +187,8 @@ def check_sfh(url):
         response.raise_for_status()
         html_content = response.text
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
-        return -1
+        # print(f"Error fetching URL: {e}")
+        return 0
 
     soup = BeautifulSoup(html_content, 'html.parser')
     form_tag = soup.find('form')
@@ -215,8 +215,8 @@ def check_mail(url):
         response.raise_for_status()
         html_content = response.text
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
-        return -1
+        # print(f"Error fetching URL: {e}")
+        return 0
 
     soup = BeautifulSoup(html_content, 'html.parser')
     mail_functions = soup.find_all(string=lambda text: "mail()" in text)
@@ -251,8 +251,8 @@ def check_redirect(url):
             return -1
 
     except requests.exceptions.RequestException as e:
-        print(f"Error checking redirects: {e}")
-        return -1
+        # print(f"Error checking redirects: {e}")
+        return 0
 
 # %%
 def check_onMouseOver(url):
@@ -261,8 +261,8 @@ def check_onMouseOver(url):
         response.raise_for_status()
         html_content = response.text
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
-        return -1
+        # print(f"Error fetching URL: {e}")
+        return 0
 
     soup = BeautifulSoup(html_content, 'html.parser')
     onmouseover_elements = soup.find_all(onmouseover=True)
@@ -281,8 +281,8 @@ def check_rightClick(url):
         response.raise_for_status()
         html_content = response.text
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
-        return -1
+        # print(f"Error fetching URL: {e}")
+        return 0
 
     soup = BeautifulSoup(html_content, 'html.parser')
     script_tags = soup.find_all('script')
@@ -300,8 +300,8 @@ def check_popup(url):
         response.raise_for_status()
         html_content = response.text
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
-        return -1
+        # print(f"Error fetching URL: {e}")
+        return 0
 
     soup = BeautifulSoup(html_content, 'html.parser')
     script_tags = soup.find_all('script')
@@ -319,8 +319,8 @@ def check_iframe(url):
         response.raise_for_status()
         html_content = response.text
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
-        return -1
+        # print(f"Error fetching URL: {e}")
+        return 0
 
     soup = BeautifulSoup(html_content, 'html.parser')
     iframe_tags = soup.find_all('iframe')
@@ -351,8 +351,8 @@ def check_age_of_domain(url):
         else:
             return -1
     except whois.parser.PywhoisError as e:
-        print(f"Error performing WHOIS lookup: {e}")
-        return -1
+        # print(f"Error performing WHOIS lookup: {e}")
+        return 0
 
 # %%
 def check_dns_record(url):
@@ -368,11 +368,11 @@ def check_dns_record(url):
     except dns.resolver.NXDOMAIN:
         return -1
     except dns.resolver.Timeout:
-        print("DNS query timed out")
-        return -1
+        # print("DNS query timed out")
+        return 0
     except Exception as e:
-        print(f"Error checking DNS records: {e}")
-        return -1
+        # print(f"Error checking DNS records: {e}")
+        return 0
 
 # %%
 def check_google_index(url):
@@ -385,8 +385,8 @@ def check_google_index(url):
         return -1 
 
     except Exception as e:
-        print(f"Error performing Google search: {e}")
-        return -1
+        # print(f"Error performing Google search: {e}")
+        return 0
 
 # %%
 def get_external_links_count(url):
@@ -402,8 +402,8 @@ def get_external_links_count(url):
         return external_links_count
 
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
-        return -1
+        # print(f"Error fetching URL: {e}")
+        return 0
 
 def check_links_to_webpage(url):
     external_links_count = get_external_links_count(url)
@@ -421,8 +421,10 @@ def compare_url_to_top_lists(url, top_domains, top_ips):
         url_domain = requests.utils.urlparse(url).netloc
         url_ip = socket.gethostbyname(url_domain)
     except requests.exceptions.RequestException as e:
-        print(f"Error parsing URL: {e}")
-        return None
+        # print(f"Error parsing URL: {e}")
+        return 0
+    except:
+        return 0
 
     is_domain_in_top_list = url_domain in top_domains
     is_ip_in_top_list = url_ip in top_ips
@@ -439,7 +441,10 @@ def process_url(url):
     attributes = {}
 
     # 1. having_IP_Address
-    attributes['Having_IP_Address'] = -1 if parsed_url.hostname.replace('.', '').isdigit() else 1
+    try:
+        attributes['Having_IP_Address'] = -1 if parsed_url.hostname.replace('.', '').isdigit() else 1
+    except:
+        attributes['Having_IP_Address'] = 1
 
     # 2. URL_Length
     attributes['URL_Length'] = 1 if len(url) < 54 else (0 if 54 <= len(url) <= 75 else -1)
@@ -531,9 +536,9 @@ def process_url(url):
 
 
 # %%
-url = "https://www.youtube.com"
-attributes = process_url(url)
-print(attributes)
+# url = "https://www.youtube.com"
+# attributes = process_url(url)
+# print(attributes)
 
 # %%
 def append_to_csv(file_path, attributes):
@@ -552,7 +557,7 @@ def append_to_csv(file_path, attributes):
         writer.writerow(attributes)
 
 # %%
-csv_file_path = "processed_urls.csv"
-append_to_csv(csv_file_path, attributes)
+# csv_file_path = "processed_urls.csv"
+# append_to_csv(csv_file_path, attributes)
 
 
